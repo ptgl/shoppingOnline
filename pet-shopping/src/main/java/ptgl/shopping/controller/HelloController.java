@@ -1,8 +1,16 @@
 package ptgl.shopping.controller;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,6 +48,40 @@ public class HelloController {
 	public String getManga(ModelMap model) {
 
 		return "manga";
+
+	}
+	
+	@RequestMapping(value = "/es/getAll", method = RequestMethod.GET)
+	public ResponseEntity<String> getES() throws IOException {
+
+		URL url = new URL("http://localhost:9200/type/index/01");
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		conn.setRequestMethod("GET");
+		conn.setRequestProperty("Accept", "application/json");
+
+		if (conn.getResponseCode() != 200) {
+			throw new RuntimeException("Failed : HTTP error code : "
+					+ conn.getResponseCode());
+		}
+
+		BufferedReader br = new BufferedReader(new InputStreamReader(
+			(conn.getInputStream())));
+
+		String output;
+		StringBuffer response = new StringBuffer();
+		String st = "";
+		System.out.println("Output from Server .... \n");
+		while ((output = br.readLine()) != null) {
+			System.out.println(output); 
+			response.append(output);
+			st.concat(output);
+		}
+
+		conn.disconnect();
+		System.out.println(response);
+		
+		
+		return new ResponseEntity<String>(response.toString(), HttpStatus.OK);
 
 	}
 	
