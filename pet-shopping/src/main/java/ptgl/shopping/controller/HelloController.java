@@ -51,39 +51,6 @@ public class HelloController {
 
 	}
 	
-	@RequestMapping(value = "/es/getAll", method = RequestMethod.GET)
-	public ResponseEntity<String> getES() throws IOException {
-
-		URL url = new URL("http://localhost:9200/type/index/01");
-		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-		conn.setRequestMethod("GET");
-		conn.setRequestProperty("Accept", "application/json");
-
-		if (conn.getResponseCode() != 200) {
-			throw new RuntimeException("Failed : HTTP error code : "
-					+ conn.getResponseCode());
-		}
-
-		BufferedReader br = new BufferedReader(new InputStreamReader(
-			(conn.getInputStream())));
-
-		String output;
-		StringBuffer response = new StringBuffer();
-		String st = "";
-		System.out.println("Output from Server .... \n");
-		while ((output = br.readLine()) != null) {
-			System.out.println(output); 
-			response.append(output);
-			st.concat(output);
-		}
-
-		conn.disconnect();
-		System.out.println(response);
-		
-		
-		return new ResponseEntity<String>(response.toString(), HttpStatus.OK);
-
-	}
 	
 	@RequestMapping(value = "/books", method = RequestMethod.GET)
 	public String getBooks(ModelMap model) {
