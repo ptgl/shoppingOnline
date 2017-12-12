@@ -5,18 +5,18 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-//import lombok.data;
+import lombok.Data;
 
 
 @Configuration
 @EnableConfigurationProperties
 @ConfigurationProperties()
-//@Data
+@Data
 @PropertySource(value = { "classpath:application.properties" })
 public class PetProperties {
 
 	@Value("${elasticsearch.url}")
-	private String ESUrl;
+	private String esUrl;
 	
 	
 	

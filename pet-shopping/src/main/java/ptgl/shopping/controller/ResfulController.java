@@ -26,8 +26,8 @@ public class ResfulController {
 	@Autowired
 	private ResfulService resfulService;
 	
-	@Autowired
-	private PetConstants petConstants;
+	//@Autowired
+	//private PetConstants petConstants;
 	
 	@Autowired
 	private PetProperties petProperties;
@@ -37,14 +37,14 @@ public class ResfulController {
 	public ResponseEntity<?> getES() throws IOException {
 
 		// use constants
-		//String url = petConstants.ElasticSearch + "index/type/01";
+		//String url = PetConstants.ElasticSearch + "index/type/01";
 		
 		// use properties file
-		String url = "index/type/01";
+		String url = petProperties.getEsUrl() + "index/type/01";
 		
 		Object result = resfulService.callGetES(url);
 		
-		return new ResponseEntity<>(result, HttpStatus.OK);
+		return new ResponseEntity<Object>(result, HttpStatus.OK);
 
 	}
 	

@@ -2,6 +2,9 @@ package ptgl.shopping.model;
 
 import java.util.Date;
 
+import lombok.Data;
+
+@Data
 public class Products {
 
 	private String id;
