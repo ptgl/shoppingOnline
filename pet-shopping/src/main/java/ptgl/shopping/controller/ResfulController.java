@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,13 +20,15 @@ import com.jayway.jsonpath.JsonPath;
 
 import ptgl.shopping.common.PetConstants;
 import ptgl.shopping.common.PetProperties;
+import ptgl.shopping.model.Products;
+import ptgl.shopping.service.IResfulService;
 import ptgl.shopping.service.ResfulService;
 
 @Controller
 public class ResfulController {
 
 	@Autowired
-	private ResfulService resfulService;
+	private IResfulService resfulService;
 	
 	//@Autowired
 	//private PetConstants petConstants;
@@ -44,7 +48,28 @@ public class ResfulController {
 		
 		Object result = resfulService.callGetES(url);
 		
+		Products pro = (Products) resfulService.convertJson2Object(result.toString(), Products.class);
+		
 		return new ResponseEntity<Object>(result, HttpStatus.OK);
+
+	}
+	
+	@RequestMapping(value = "/init", method = RequestMethod.GET)
+	public ResponseEntity<?> init() throws IOException {
+
+		Products pet = new Products();
+		pet.setName("dog");
+		pet.setType("pet");
+		pet.setPrice(123.0);
+		
+		String result = resfulService.convertObject2Json(pet);
+		Products pro = (Products) resfulService.convertJson2Object(result, Products.class);
+		pro.setName("cat");
+		List<Products> list = new ArrayList<Products>();
+		list.add(pro);
+		list.add(pet);
+		
+		return new ResponseEntity<Object>(list, HttpStatus.OK);
 
 	}
 	
