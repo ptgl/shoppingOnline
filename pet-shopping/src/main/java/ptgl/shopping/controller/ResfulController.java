@@ -29,31 +29,27 @@ public class ResfulController {
 
 	@Autowired
 	private IResfulService resfulService;
-	
-	//@Autowired
-	//private PetConstants petConstants;
-	
+
+	// @Autowired
+	// private PetConstants petConstants;
+
 	@Autowired
 	private PetProperties petProperties;
-	
-	
+
 	@RequestMapping(value = "/es/getAll", method = RequestMethod.GET)
 	public ResponseEntity<?> getES() throws IOException {
 
-		// use constants
-		//String url = PetConstants.ElasticSearch + "index/type/01";
-		
 		// use properties file
 		String url = petProperties.getEsUrl() + "index/type/01";
-		
+
 		Object result = resfulService.callGetES(url);
-		
+
 		Products pro = (Products) resfulService.convertJson2Object(result.toString(), Products.class);
-		
+
 		return new ResponseEntity<Object>(result, HttpStatus.OK);
 
 	}
-	
+
 	@RequestMapping(value = "/init", method = RequestMethod.GET)
 	public ResponseEntity<?> init() throws IOException {
 
@@ -61,16 +57,22 @@ public class ResfulController {
 		pet.setName("dog");
 		pet.setType("pet");
 		pet.setPrice(123.0);
-		
+
 		String result = resfulService.convertObject2Json(pet);
 		Products pro = (Products) resfulService.convertJson2Object(result, Products.class);
 		pro.setName("cat");
 		List<Products> list = new ArrayList<Products>();
 		list.add(pro);
 		list.add(pet);
-		
-		return new ResponseEntity<Object>(list, HttpStatus.OK);
+
+		String url = PetConstants.ElasticSearch + "index/type/" + pet.getId().toString();
+		int response = resfulService.callPostES(url, result);
+
+		if (response == 200) {
+			return new ResponseEntity<Object>(response, HttpStatus.OK);
+		} else
+			return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
 
 	}
-	
+
 }

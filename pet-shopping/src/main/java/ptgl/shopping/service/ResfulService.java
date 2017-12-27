@@ -1,9 +1,12 @@
 package ptgl.shopping.service;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.ProtocolException;
 import java.net.URL;
 
 import org.springframework.stereotype.Service;
@@ -34,12 +37,10 @@ public class ResfulService implements IResfulService {
 
 		String output;
 		StringBuffer response = new StringBuffer();
-		String st = "";
 		System.out.println("Output from Server .... \n");
 		while ((output = br.readLine()) != null) {
 			System.out.println(output);
 			response.append(output);
-			st.concat(output);
 		}
 
 		conn.disconnect();
@@ -52,7 +53,8 @@ public class ResfulService implements IResfulService {
 
 	}
 
-	public Object convertJson2Object(String json, Class className) throws JsonParseException, JsonMappingException, IOException {
+	public Object convertJson2Object(String json, Class className)
+			throws JsonParseException, JsonMappingException, IOException {
 
 		ObjectMapper mapper = new ObjectMapper();
 		Object p = mapper.readValue(json, className);
@@ -66,6 +68,34 @@ public class ResfulService implements IResfulService {
 		String product = mapper.writeValueAsString(obj);
 		return product;
 
+	}
+
+	
+	public int callPostES(String url, Object json) throws IOException {
+		String requestMethod = "POST";
+		URL obj = new URL(url);
+		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+		con.setRequestMethod(requestMethod);
+		con.setRequestProperty("Content-Type", "application/json");
+		// Send post request
+		con.setDoOutput(true);
+		BufferedWriter wr = new BufferedWriter(new OutputStreamWriter(con.getOutputStream(), "UTF-8"));
+		wr.write(json.toString());
+		wr.flush();
+		wr.close();
+		int responseCode = con.getResponseCode();
+
+		BufferedReader br = new BufferedReader(new InputStreamReader((con.getInputStream())));
+
+		String output;
+		System.out.println("Output from Server .... \n");
+		while ((output = br.readLine()) != null) {
+			System.out.println(output);
+		}
+
+		con.disconnect();
+		
+		return responseCode;
 	}
 
 }

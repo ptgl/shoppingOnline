@@ -7,9 +7,10 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 
 public interface IResfulService {
 	
-	 Object callGetES(String urlES) throws IOException;
+	public int callPostES(String url, Object json) throws IOException;
+	public Object callGetES(String urlES) throws IOException;
 	
-	 Object convertJson2Object(String json, Class className) throws JsonParseException, JsonMappingException, IOException ;
+	public Object convertJson2Object(String json, Class className) throws JsonParseException, JsonMappingException, IOException ;
 
-	 String convertObject2Json(Object obj) throws JsonParseException, JsonMappingException, IOException ;
+	public String convertObject2Json(Object obj) throws JsonParseException, JsonMappingException, IOException ;
 }

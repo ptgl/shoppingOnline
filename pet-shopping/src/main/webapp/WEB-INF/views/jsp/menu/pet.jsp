@@ -9,30 +9,30 @@
 <title>Pet Stores</title>
 </head>
 <body>
-<%@ include file="../lib.jsp" %>
+	<%@ include file="../lib.jsp"%>
 	<table>
 		<thead>
-<th>Name</th>
-<th>Price</th>
-<th>Amount</th>
-<th></th>
+			<th>Name</th>
+			<th>Price</th>
+			<th>Amount</th>
+			<th></th>
 		</thead>
-<tbody>
-<c:forEach var="item" items="${petList}">
-<tr>
-<td><c:out value="${item}"/></td>
-<td>100k</td>
-<td><input type="text"></td>
-<td><button>Buy</button></td>
-</tr>
+		<tbody>
+			<c:forEach var="item" items="${petList}">
+				<tr>
+					<td><c:out value="${item}" /></td>
+					<td>100k</td>
+					<td><input type="text"></td>
+					<td><button>Buy</button></td>
+				</tr>
 
-</c:forEach>
+			</c:forEach>
 
-</tbody>
+		</tbody>
 	</table>
-	
-	 
-	
-	
+
+
+
+
 </body>
 </html>
