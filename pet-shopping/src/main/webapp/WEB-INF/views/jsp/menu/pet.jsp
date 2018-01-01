@@ -31,8 +31,8 @@
 		</tbody>
 	</table>
 
-
-
+<a class="btn btn-default" href="addProduct" role="button">Add product</a>
+	
 
 </body>
 </html>

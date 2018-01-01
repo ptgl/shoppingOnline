@@ -8,10 +8,15 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -74,5 +79,20 @@ public class ResfulController {
 			return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
 
 	}
+	
+	@RequestMapping(value = "/addProduct", method = RequestMethod.POST)
+    public String submit(@Valid @ModelAttribute("product")Products product, 
+      BindingResult result, ModelMap model) {
+        if (result.hasErrors()) {
+            return "error";
+        }
+        model.addAttribute("name", product.getName());
+        model.addAttribute("type", product.getType());
+        model.addAttribute("price", product.getPrice());
+        
+        System.out.print(product.getName()+" "+product.getType()+" "+product.getPrice());
+        
+        return "/menu/addProduct";
+    }
 
 }
