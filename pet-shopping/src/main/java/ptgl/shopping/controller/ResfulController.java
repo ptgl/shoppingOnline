@@ -17,12 +17,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
-
+import org.apache.log4j.Logger;
 import ptgl.shopping.common.PetConstants;
 import ptgl.shopping.common.PetProperties;
 import ptgl.shopping.model.Products;
@@ -35,6 +38,8 @@ public class ResfulController {
 	@Autowired
 	private IResfulService resfulService;
 
+	private static final Logger LOGGER = Logger.getLogger(ResfulController.class);
+	
 	// @Autowired
 	// private PetConstants petConstants;
 
@@ -80,9 +85,20 @@ public class ResfulController {
 
 	}
 	
+	@RequestMapping(value = "/getAll/{type}", method = RequestMethod.GET)
+	public List<String> getAll(@PathVariable String type) throws IOException {
+		List<String> results = new ArrayList();
+
+		String url = petProperties.getEsUrl() + "product/"+type;
+
+		Object result = resfulService.getAllES(url);
+			
+		return results;
+	}
+	
 	@RequestMapping(value = "/addProduct", method = RequestMethod.POST)
     public String submit(@Valid @ModelAttribute("product")Products product, 
-      BindingResult result, ModelMap model) {
+      BindingResult result, ModelMap model) throws JsonParseException, JsonMappingException, IOException {
         if (result.hasErrors()) {
             return "error";
         }
@@ -90,7 +106,13 @@ public class ResfulController {
         model.addAttribute("type", product.getType());
         model.addAttribute("price", product.getPrice());
         
-        System.out.print(product.getName()+" "+product.getType()+" "+product.getPrice());
+        
+        String url = PetConstants.ElasticSearch + "product/"+product.getType()+"/"+product.getId();
+        String body = resfulService.convertObject2Json(product);
+		int response = resfulService.callPostES(url, body);
+		LOGGER.info(response);
+        
+        LOGGER.info(product.getName()+" "+product.getType()+" "+product.getPrice());
         
         return "/menu/addProduct";
     }

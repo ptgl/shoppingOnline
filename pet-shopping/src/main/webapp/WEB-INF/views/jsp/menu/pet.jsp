@@ -20,8 +20,8 @@
 		<tbody>
 			<c:forEach var="item" items="${petList}">
 				<tr>
-					<td><c:out value="${item}" /></td>
-					<td>100k</td>
+					<td><c:out value="${item.name}" /></td>
+					<td><c:out value="${item.price}" /></td>
 					<td><input type="text"></td>
 					<td><button>Buy</button></td>
 				</tr>

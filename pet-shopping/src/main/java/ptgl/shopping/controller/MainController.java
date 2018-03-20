@@ -9,6 +9,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -17,12 +18,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-
+import ptgl.shopping.common.PetProperties;
 import ptgl.shopping.model.Products;
+import ptgl.shopping.service.IResfulService;
 
 @Controller
 public class MainController {
 
+	@Autowired
+	private IResfulService resfulService;
+
+	@Autowired
+	private PetProperties petProperties;
+	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String printWelcome(ModelMap model) {
 
@@ -32,15 +40,18 @@ public class MainController {
 	}
 	
 	@RequestMapping(value = "/pets", method = RequestMethod.GET)
-	public ModelAndView getPets(ModelMap model) {
+	public ModelAndView getPets(ModelMap model) throws IOException {
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("/menu/pet");
 		List<String> pets = new ArrayList();
-		pets.add("Dog");
-		pets.add("Cat");
-		pets.add("Hamster");
+		String url = petProperties.getEsUrl() + "product/pet";
+		pets = (List<String>) resfulService.getAllES(url);
+		List<Products> pro = (List<Products>) resfulService.convertJson2Object(pets.toString(),  (Class<List<Products>>) new ArrayList<Products>().getClass());
+//		pets.add("Dog");
+//		pets.add("Cat");
+//		pets.add("Hamster");
 		
-		mv.addObject("petList", pets);
+		mv.addObject("petList", pro);
 		
 		return mv;
 
